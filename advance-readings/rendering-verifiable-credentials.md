@@ -203,3 +203,45 @@ such as the Web Accessibility Initiative (WAI) at the World Wide Web Consortium
 as well as other national and international bodies that focus on ensuring that
 people with accessibility needs are not excluded from using technologies such as
 Verifiable Credentials.
+
+Related Work
+============
+
+TradeTrust / Open Attestation
+-----------------------------
+
+The Singapore government has released a toolkit for digitising cross border documents like certificates, permits, invoices etc as digitally verifiable documents. The framework is called TradeTrust (TT) and the implementation is Open Attestation (OA). The most recent version of OA (v3.0) has aimed to achiieve compliance with the W3C VC data model. A key feature of TT/OA is "decentralised rendering" whereby the issuer specifies a template to be used for human rendering of the VC data. This is critical in corss border trade as the same document (eg a certificate of origin) is often passed around to many different staekholders, each at different levels of technical maturity.  So the "paper friendly" transition that decentralised rendering offers is key to scalable uptake. Some relevant links.
+
+* https://github.com/Open-Attestation/adr/blob/master/decentralised_rendering.md
+* https://www.openattestation.com/docs/developer-section/libraries/remote-files/decentralized-renderer/decentralized-renderer-react-components/
+* https://github.com/Open-Attestation/decentralized-renderer-react-components
+
+We note that these links are to free software rather than to open standard specifications. Nevertheless the work is relevant and may be considered as an initial contributoin to the W3C work on rendering.  
+
+A little summary of OA vs this proposal:
+
+OA style: (inside OpenAttestationMetaData)   
+```
+"template": {
+      "name": "CUSTOM_TEMPLATE",
+      "type": "EMBEDDED_RENDERER",
+      "url": "https://localhost:3000/renderer"
+    },
+```
+
+this proposal:
+```
+  "render": [{
+    // An SVG file that can be used to render the credential
+    "id": "https://svg.example/degree.svg",
+    // The type of rendering hint
+    "type": "SvgRenderingHint2022",
+    // A multibase-encoded multi-hash of the SVG file
+    "digestMultibase": "zQmAPdhyxzznFCwYxAp2dRerWC85Wg6wFl9G270iEu5h6JqW"
+  }]
+```
+ 
+ uri  maps to id clearly enough. name and type from OA don't have an equivalent. While the proposed style uses a hash for security which OA doesn't have (but this just seems like a good idea). 
+ 
+ One other concern - the rednered format.  PDF is a very widely suppoted format for documents whilst SVG is somewhat less familiar to amny business users in the supply chain. This matters less when the rendering is taken care of by code in some wallet application but the supply chain use case also includes credentials excahnged simply as email attachments. Might be good to explore PDF options too.
+ 
